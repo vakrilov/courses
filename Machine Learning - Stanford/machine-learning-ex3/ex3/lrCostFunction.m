@@ -9,8 +9,8 @@ function [J, grad] = lrCostFunction(theta, X, y, lambda)
 m = length(y); % number of training examples
 
 % You need to return the following variables correctly 
-J = 0;
-grad = zeros(size(theta));
+% J = 0;
+% grad = zeros(size(theta));
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Compute the cost of a particular choice of theta.
@@ -37,16 +37,22 @@ grad = zeros(size(theta));
 %
 
 
+h = sigmoid(X * theta);
+posCost = y' * log( h );
+negCost = (1 - y)' * log(1 - h);
 
+thetaX = theta(2:end);
+regTerm = (lambda / (2*m)) * thetaX' * thetaX;
 
+% Cost Function
+J = (1 / m) * (-posCost - negCost) + regTerm;
 
-
-
-
-
+% Gradient
+temp = theta; 
+temp(1) = 0;   % because we don't add anything for j = 0  
+grad = (1 / m) * X' * (h - y) + (lambda / m) * temp;
 
 % =============================================================
 
-grad = grad(:);
 
 end
