@@ -7,9 +7,8 @@ function p = predict(Theta1, Theta2, X)
 m = size(X, 1);
 num_labels = size(Theta2, 1);
 
-% You need to return the following variables correctly 
-p = zeros(size(X, 1), 1);
 
+% You need to return the following variables correctly 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Complete the following code to make predictions using
 %               your learned neural network. You should set p to a 
@@ -21,15 +20,21 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+% Add bias
+X = [ones(m, 1) X];
 
+% Calc hidden layer
+hidden = sigmoid(X*Theta1');
 
+% Add bias
+hidden = [ones(size(hidden, 1), 1) hidden];
 
+% Calc output
+output = sigmoid(hidden*Theta2');
 
-
-
-
+% Get max
+[val,p] = max(output, [], 2);
 
 % =========================================================================
-
 
 end
