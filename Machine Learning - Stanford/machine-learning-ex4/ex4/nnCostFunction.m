@@ -30,6 +30,9 @@ J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 
+% sizeT1 = size(Theta1)
+% sizeT2 = size(Theta2)
+
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
@@ -61,31 +64,60 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+% t=cputime;
 
 
+yk = zeros(m, num_labels);
+for i = 1:m
+    yk(i, y(i)) = 1;
+endfor  
 
+% X = [ones(m, 1) X];
+a1 = [ones(m, 1) X];
+z2 = a1 * Theta1';
 
+a2 = sigmoid(z2);
+a2 = [ones(m, 1) a2];
 
+z3 = a2 * Theta2';
+a3 = sigmoid(z3);
 
+h2 = a3;
 
-
-
-
-
-
-
-
-
-
-
-
+for i = 1:m
+    yi = yk(i,:);
+    hi = h2(i,:);
+    J = J + (1/m) * ( -yi * log(hi') - (1 - yi)*log(1 - hi'));
+endfor
 
 % -------------------------------------------------------------
+
+% regularization
+t1reg = Theta1(:,2:end)(:);
+t2reg = Theta2(:,2:end)(:);
+regTerm = (lambda / (2 * m)) * (t1reg' *t1reg + t2reg' * t2reg);
+J = J + regTerm;
+
+% calc gradients
+for t = 1:m
+    delta_3 = (a3(t,:) - yk(t,:))';
+    % delta_3_size = size(delta_3)
+    delta_2 = Theta2'*delta_3 .* [0; sigmoidGradient(z2(t,:))'];
+    % delta_2_size = size(delta_2)
+    Theta2_grad = Theta2_grad + delta_3 * a2(t,:);
+    Theta1_grad = Theta1_grad + delta_2(2:end) * a1(t,:);
+endfor
+
+Theta2_grad = (1/m)*Theta2_grad;
+Theta1_grad = (1/m)*Theta1_grad;
+
+% Add regularization
+Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + (lambda/m)*Theta1(:,2:end);
+Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + (lambda/m)*Theta2(:,2:end);
 
 % =========================================================================
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
 
 end
