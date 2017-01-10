@@ -52,21 +52,38 @@ error_val   = zeros(m, 1);
 
 % ---------------------- Sample Solution ----------------------
 
-for i = 1:m
-    % Compute train/cross validation errors using training examples 
-    % X(1:i, :) and y(1:i), storing the result in 
-    % error_train(i) and error_val(i)
-    Xtrain = X(1:i,:);
-    ytrain = y(1:i);
+% for i = 1:m
+%     % Compute train/cross validation errors using training examples 
+%     % X(1:i, :) and y(1:i), storing the result in 
+%     % error_train(i) and error_val(i)
+%     Xtrain = X(1:i,:);
+%     ytrain = y(1:i);
 
-    [theta] = trainLinearReg(Xtrain, ytrain, lambda);
+%     [theta] = trainLinearReg(Xtrain, ytrain, lambda);
     
-    error_train(i) = linearRegCostFunction(Xtrain, ytrain, theta, 0);
-    error_val(i) = linearRegCostFunction(Xval, yval, theta, 0);
+%     error_train(i) = linearRegCostFunction(Xtrain, ytrain, theta, 0);
+%     error_val(i) = linearRegCostFunction(Xval, yval, theta, 0);
+% end
+
+randSets = 10;
+
+for i = 1:m
+    for j = 1:randSets
+
+        ord = randperm(m);
+        Xtrain = X(ord, :)(1:i, :);
+        ytrain = y(ord, :)(1:i);
+
+        [theta] = trainLinearReg(Xtrain, ytrain, lambda);
+        
+        error_train(i) = error_train(i) + linearRegCostFunction(Xtrain, ytrain, theta, 0);
+        error_val(i) = error_val(i) + linearRegCostFunction(Xval, yval, theta, 0);
+
+    end
 end
 
-
-
+error_train = error_train / randSets;
+error_val = error_val / randSets;
 
 % -------------------------------------------------------------
 
