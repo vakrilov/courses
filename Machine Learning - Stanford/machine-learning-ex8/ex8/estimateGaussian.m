@@ -22,12 +22,12 @@ sigma2 = zeros(n, 1);
 %
 
 
+% mu = sum(X) / m;
+% dif = X - mu;
+% sigma2 = sum(dif .* dif) / m;
 
-
-
-
-
-
+mu = mean(X);
+sigma2 = var(X, 1);
 
 
 % =============================================================
